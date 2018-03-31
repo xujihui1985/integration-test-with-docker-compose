@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./script/Dockerfile-test
+    command: sh /app/script/runtest.sh
+    networks:
+      - ci-network
+    depends_on:
+      - init
+  init:
+    image: "mysql:5.7"
+    volumes:
+      - .:/app
+    networks:
+      - ci-network
+    depends_on:
+      - mysql
+    command: bash /app/script/initdb.sh
+  mysql:
+    image: "mysql:5.7"
+    networks:
+      - ci-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=basement
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    healthcheck:
+      test: mysql -u admin -padmin -h mysql basement -e "show tables";
+      interval: 2s
+      timeout: 10s
+      retries: 3
+networks:
+  ci-network:
+    driver: bridge
