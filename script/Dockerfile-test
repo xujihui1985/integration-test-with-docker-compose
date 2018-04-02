@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY ./package.json .
 
-RUN npm install --quite
+RUN npm install --registry=http://registry.npm.alibaba-inc.com --quite
 
 COPY . .

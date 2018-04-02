@@ -4,6 +4,8 @@ services:
     build:
       context: ./
       dockerfile: ./script/Dockerfile-test
+    volumes:
+      - data-volume:/share
     command: sh /app/script/runtest.sh
     networks:
       - ci-network
@@ -13,6 +15,7 @@ services:
     image: "mysql:5.7"
     volumes:
       - .:/app
+      - data-volume:/share
     networks:
       - ci-network
     depends_on:
@@ -35,3 +38,5 @@ services:
 networks:
   ci-network:
     driver: bridge
+volumes:
+  data-volume:
